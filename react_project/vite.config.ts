@@ -4,7 +4,7 @@ import { VitePWA } from 'vite-plugin-pwa'
 
 // https://vite.dev/config/
 export default defineConfig({
-  base: '/', // Use '/' for custom domain, or '/repo-name/' for github.io/repo-name
+  base: '/portfolio/', // Use '/' for custom domain, or '/repo-name/' for github.io/repo-name
   plugins: [
     react(),
     VitePWA({
@@ -51,8 +51,8 @@ export default defineConfig({
         background_color: "#080808",
         display: "standalone",
         orientation: "portrait",
-        scope: "/",
-        start_url: "/",
+        scope: "/portfolio/",
+        start_url: "/portfolio/",
         categories: ["portfolio", "business", "technology"],
         icons: [
           {
