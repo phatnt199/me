@@ -1,10 +1,10 @@
-import { 
-  Code, 
-  Database, 
-  Layout, 
+import {
+  Code,
+  Database,
+  Layout,
   Layers,
-  Server, 
-  Smartphone, 
+  Server,
+  Smartphone,
   Terminal,
   Clock,
   Award,
@@ -18,6 +18,9 @@ import {
 } from 'lucide-react';
 
 // --- Constants ---
+const BASE_URL = import.meta.env.BASE_URL; // Gets '/portfolio/' or '/' depending on config
+const img = (path: string) => `${BASE_URL}${path}`.replace('//', '/'); // Helper for image paths
+
 const START_WORK_DATE = new Date(2015, 7, 1); // Month is 0-indexed (Aug = 7)
 
 // --- Helper for dynamic calculations ---
@@ -41,7 +44,7 @@ export const HERO_DATA = {
   location: "Vietnam 🇻🇳",
   intro: "Translating complex business requirements into scalable, high-performance technical architectures. I bridge the gap between visionary strategy and flawless execution.",
   cta: "OPEN FOR PARTNERSHIPS",
-  avatar: "/images/profile-2.jpg" // Using the image from assets
+  avatar: img("images/profile-2.jpg") // Using the image from assets
 };
 
 export const ABOUT_DATA = {
@@ -231,7 +234,7 @@ export interface Project {
 export const PROJECTS_DATA: Project[] = [
   {
     title: 'Beacon Indoor Navigation',
-    image: '/images/work11.jpg',
+    image: img("images/work11.jpg"),
     description: 'Award-winning IoT ecosystem for indoor positioning using BLE beacons. Capstone project recognized as "Best Innovation" at FPT University.',
     techStack: ['Android', 'BLE', 'Node.js', 'MongoDB', 'Machine Learning'],
     category: 'IoT',
@@ -240,7 +243,7 @@ export const PROJECTS_DATA: Project[] = [
   },
   {
     title: 'Myo Gesture Control',
-    image: '/images/work10.jpg',
+    image: img("images/work10.jpg"),
     description: 'Experimental wearable integration using Myo armband for gesture-based device control and accessibility applications.',
     techStack: ['Android', 'Myo SDK', 'Bluetooth', 'Signal Processing'],
     category: 'IoT',
@@ -249,7 +252,7 @@ export const PROJECTS_DATA: Project[] = [
   },
   {
     title: 'Smart Home IoT Hub',
-    image: '/images/work2.jpg',
+    image: img("images/work2.jpg"),
     description: 'Centralized IoT management platform connecting multiple smart devices with real-time monitoring and automation rules.',
     techStack: ['React', 'Node.js', 'MQTT', 'PostgreSQL', 'Docker'],
     category: 'IoT',
@@ -258,7 +261,7 @@ export const PROJECTS_DATA: Project[] = [
   },
   {
     title: 'Travel Booking Platform',
-    image: '/images/work6.jpg',
+    image: img("images/work6.jpg"),
     description: 'Full-stack travel ecosystem integrating GDS systems for flight, hotel, and tour bookings with real-time availability.',
     techStack: ['Java', 'Spring Boot', 'Angular', 'Amadeus GDS', 'Redis'],
     category: 'Web',
@@ -267,7 +270,7 @@ export const PROJECTS_DATA: Project[] = [
   },
   {
     title: 'Enterprise ERP System',
-    image: '/images/work5.png',
+    image: img("images/work5.png"),
     description: 'Comprehensive enterprise resource planning solution covering HR, inventory, finance, and project management modules.',
     techStack: ['Java', 'Spring', 'Oracle DB', 'Angular', 'Jasper Reports'],
     category: 'Enterprise',
@@ -276,7 +279,7 @@ export const PROJECTS_DATA: Project[] = [
   },
   {
     title: 'Retail Loyalty CRM',
-    image: '/images/work7.jpg',
+    image: img("images/work7.jpg"),
     description: 'Mobile-first loyalty and CRM platform deployed across 50+ retail chains with points management and customer analytics.',
     techStack: ['Android', 'Kotlin', 'Spring Boot', 'PostgreSQL', 'Firebase'],
     category: 'Mobile',
@@ -285,7 +288,7 @@ export const PROJECTS_DATA: Project[] = [
   },
   {
     title: 'Transportation Ticketing System',
-    image: '/images/work13.jpg',
+    image: img("images/work13.jpg"),
     description: 'High-performance ticketing platform for Vietjet Air and NexBus, handling 50k+ concurrent users with instant booking, dynamic pricing, and fault-tolerant architecture.',
     techStack: ['Java', 'Spring Boot', 'React', 'Kafka', 'Redis', 'Kubernetes', 'PostgreSQL'],
     category: 'Enterprise',
@@ -294,7 +297,7 @@ export const PROJECTS_DATA: Project[] = [
   },
   {
     title: 'Stock Trading Platform',
-    image: '/images/work14.jpg',
+    image: img("images/work14.jpg"),
     description: 'Real-time trading application with live market data, portfolio management, and technical analysis tools.',
     techStack: ['C++', 'Rust', 'TypeScript', 'React', 'Redis', 'Docker'],
     category: 'Finance',
@@ -303,7 +306,7 @@ export const PROJECTS_DATA: Project[] = [
   },
   {
     title: 'Algorithmic Trading Engine',
-    image: '/images/work15.jpg',
+    image: img("images/work15.jpg"),
     description: 'Low-latency algo-trading infrastructure with custom strategy backtesting and automated order execution.',
     techStack: ['C++', 'Rust', 'TypeScript', 'React', 'Redis', 'Docker'],
     category: 'Finance',
@@ -313,7 +316,7 @@ export const PROJECTS_DATA: Project[] = [
   // --- Business Projects (Freelance & Consultancy) ---
   {
     title: 'Samick Furniture ERP',
-    image: '/images/work5.png',
+    image: img("images/work5.png"),
     description: 'End-to-end ERP system for Samick Korea, managing production planning, inventory, supply chain, and sales operations for premium furniture manufacturing.',
     techStack: ['TypeScript', 'React', 'PostgreSQL', 'Redis', 'Firebase', 'AWS', 'Docker'],
     category: 'Enterprise',
@@ -322,7 +325,7 @@ export const PROJECTS_DATA: Project[] = [
   },
   {
     title: 'GongCheck Platform',
-    image: '/images/work6.jpg',
+    image: img("images/work6.jpg"),
     description: 'On-demand marketplace connecting architects, interior designers, and furniture providers in Korea. Think "Grab for Home Design" with real-time matching and project management.',
     techStack: ['Flutter', 'Dart', 'Firebase', 'PostgreSQL', 'AWS'],
     category: 'Mobile',
@@ -331,7 +334,7 @@ export const PROJECTS_DATA: Project[] = [
   },
   {
     title: 'Korea DMA HFT System',
-    image: '/images/work15.jpg',
+    image: img("images/work15.jpg"),
     description: 'Ultra-low-latency Direct Market Access system for Korean equities, featuring co-located infrastructure and custom FPGA-accelerated order routing.',
     techStack: ['C++', 'Rust', 'TypeScript', 'React', 'Redis', 'Docker'],
     category: 'Finance',
@@ -340,7 +343,7 @@ export const PROJECTS_DATA: Project[] = [
   },
   {
     title: 'Enterprise HRM Suite',
-    image: '/images/work5.png',
+    image: img("images/work5.png"),
     description: 'Comprehensive human resource management platform with payroll, attendance, performance reviews, and employee self-service portal for mid-size enterprises.',
     techStack: ['Java', 'Spring Boot', 'React', 'PostgreSQL', 'Keycloak', 'Docker'],
     category: 'Enterprise',
@@ -349,7 +352,7 @@ export const PROJECTS_DATA: Project[] = [
   },
   {
     title: 'Gym Chain Loyalty System',
-    image: '/images/work7.jpg',
+    image: img("images/work7.jpg"),
     description: 'Multi-tenant loyalty and membership platform deployed across fitness chains, featuring points rewards, class booking, and member engagement analytics.',
     techStack: ['TypeScript', 'React', 'PostgreSQL', 'Redis', 'Firebase', 'AWS', 'Docker'],
     category: 'Mobile',

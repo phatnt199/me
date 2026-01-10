@@ -1,12 +1,12 @@
 import { motion, LayoutGroup } from 'framer-motion';
-import { 
-  Home, 
-  User, 
-  Briefcase, 
-  Code, 
-  Layers, 
-  Mail, 
-  Sun, 
+import {
+  Home,
+  User,
+  Briefcase,
+  Code,
+  Layers,
+  Mail,
+  Sun,
   Moon,
   PanelLeft,
   PanelRight,
@@ -17,6 +17,7 @@ import { NavLink, useLocation } from 'react-router-dom';
 import { useTheme } from '../../context/ThemeContext';
 import { useSidebar, type SidebarPosition } from '../../context/SidebarContext';
 import { Magnetic } from '../ui/Magnetic';
+import { HERO_DATA } from '../../data/portfolio';
 import clsx from 'clsx';
 
 const NAV_ITEMS = [
@@ -65,7 +66,7 @@ export const Sidebar = () => {
               isVertical ? "w-24 h-24 mb-4" : "w-12 h-12 border-2"
             )}
           >
-            <img src="/images/profile-2.jpg" alt="Phat Nguyen" className="w-full h-full object-cover" />
+            <img src={HERO_DATA.avatar} alt="Phat Nguyen" className="w-full h-full object-cover" />
           </motion.div>
           
           <div className={clsx("text-center", !isVertical && "text-left")}>
