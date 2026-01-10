@@ -1,0 +1,8 @@
+FROM node:carbon
+
+# Maintainer
+MAINTAINER PhatNT <tanphat199@gmail.com>
+
+WORKDIR .
+
+RUN npm install -g serve 

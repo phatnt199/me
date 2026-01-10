@@ -1,0 +1,18 @@
+version: '3'
+
+services:
+  portfolio:
+    build:
+      context: .
+      dockerfile: dockerfile-react-app
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+      - ./react_project/build:/build 
+    command: serve -p 1190 -s build
+    container_name: phatnt_portfolio
+    ports:
+    - "1191:1190"
+    environment:
+      DEPLOY_MODE: production
+
