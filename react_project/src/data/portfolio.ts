@@ -229,6 +229,7 @@ export interface Project {
   category: ProjectCategory;
   highlights: string[];
   year: string;
+  github?: string;
 }
 
 export const PROJECTS_DATA: Project[] = [
@@ -358,6 +359,27 @@ export const PROJECTS_DATA: Project[] = [
     category: 'Mobile',
     highlights: ['Multi-tenant SaaS', '10+ gym chains', 'Member analytics'],
     year: '2023'
+  },
+  // --- Open Source Projects ---
+  {
+    title: 'Aether Infrastructure',
+    image: img("images/aether.jpg"),
+    description: 'Open-source monorepo containing modular infrastructure packages for Node.js applications, AI agents, reactive apps, and Electron desktop apps. Built for reusability across different application contexts.',
+    techStack: ['TypeScript', 'Bun', 'Node.js', 'LoopBack', 'Electron'],
+    category: 'Backend',
+    highlights: ['1,200+ commits', '5 modular packages', 'Open Source'],
+    year: '2024',
+    github: 'https://github.com/phatnt199/aether'
+  },
+  {
+    title: 'Ignis Server Framework',
+    image: img("images/ignis.jpg"),
+    description: 'High-performance TypeScript server framework combining LoopBack 4 enterprise patterns with Hono speed (~140k req/s). Features dependency injection, Drizzle ORM, and auto-generated OpenAPI docs.',
+    techStack: ['TypeScript', 'Hono', 'Drizzle ORM', 'PostgreSQL', 'Zod', 'Bun'],
+    category: 'Backend',
+    highlights: ['140k req/s', 'Multi-runtime', 'MIT License'],
+    year: '2025',
+    github: 'https://github.com/VENIZIA-AI/ignis'
   },
 ];
 

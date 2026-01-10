@@ -7,12 +7,12 @@ import { Magnetic } from '../ui/Magnetic';
 
 export const Hero = () => {
   return (
-    <section className="min-h-screen flex items-center justify-center px-6 py-20 relative overflow-hidden">
+    <section className="min-h-screen flex items-start md:items-center justify-center px-6 pt-4 pb-20 md:py-20 relative overflow-hidden">
       {/* Background Decor */}
       <div className="absolute top-20 right-20 w-96 h-96 bg-primary/10 rounded-full blur-3xl -z-10" />
       <div className="absolute bottom-20 left-20 w-72 h-72 bg-secondary/10 rounded-full blur-3xl -z-10" />
 
-      <div className="max-w-7xl w-full grid lg:grid-cols-2 gap-12 lg:gap-8 items-center pt-10 md:pt-0">
+      <div className="max-w-7xl w-full grid lg:grid-cols-2 gap-4 md:gap-12 lg:gap-8 items-center pt-0 md:pt-0">
         {/* Left: Text Content */}
         <div className="order-2 lg:order-1 text-center lg:text-left">
           <motion.div
@@ -76,7 +76,7 @@ export const Hero = () => {
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.7 }}
-          className="order-1 lg:order-2 flex justify-center py-8"
+          className="order-1 lg:order-2 flex justify-center py-2 md:py-8"
         >
           <div className="relative w-64 h-64 sm:w-80 sm:h-80 md:w-96 md:h-96">
              {/* Decorative Rings */}

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { PROJECTS_DATA, type ProjectCategory } from '../../data/portfolio';
-import { Calendar, Sparkles } from 'lucide-react';
+import { Calendar, Sparkles, Github, ExternalLink } from 'lucide-react';
 import { TiltCard } from '../ui/TiltCard';
 import clsx from 'clsx';
 
@@ -9,6 +9,7 @@ const CATEGORIES: { label: string; value: ProjectCategory | 'all' }[] = [
   { label: 'All', value: 'all' },
   { label: 'Finance', value: 'Finance' },
   { label: 'Enterprise', value: 'Enterprise' },
+  { label: 'Backend', value: 'Backend' },
   { label: 'Web', value: 'Web' },
   { label: 'Mobile', value: 'Mobile' },
   { label: 'IoT', value: 'IoT' },
@@ -126,9 +127,27 @@ export const Projects = () => {
 
                   {/* Content Info */}
                   <div className="p-4 sm:p-6 flex flex-col flex-1 bg-bg-secondary">
-                    <h3 className="text-base sm:text-lg font-bold text-fg group-hover:text-primary transition-colors mb-2 sm:mb-3 line-clamp-1">
-                      {project.title}
-                    </h3>
+                    <div className="flex items-center justify-between gap-2 mb-2 sm:mb-3">
+                      <h3 className="text-base sm:text-lg font-bold text-fg group-hover:text-primary transition-colors line-clamp-1">
+                        {project.title}
+                      </h3>
+                      {project.github && (
+                        <a
+                          href={project.github}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          onClick={(e) => e.stopPropagation()}
+                          className={clsx(
+                            "flex items-center gap-1.5 px-2 py-1 sm:px-3 sm:py-1.5 rounded-lg text-xs font-medium transition-all duration-300 shrink-0",
+                            "bg-bg-tertiary text-fg-muted hover:bg-fg hover:text-bg"
+                          )}
+                        >
+                          <Github size={14} />
+                          <span className="hidden sm:inline">View</span>
+                          <ExternalLink size={10} className="hidden sm:inline" />
+                        </a>
+                      )}
+                    </div>
 
                     {/* Highlights */}
                     <div className="flex flex-wrap gap-1.5 sm:gap-2 mb-3 sm:mb-4">

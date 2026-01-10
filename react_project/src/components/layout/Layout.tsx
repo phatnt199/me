@@ -1,4 +1,5 @@
-import { motion, LayoutGroup } from 'framer-motion';
+import { useState } from 'react';
+import { motion, LayoutGroup, AnimatePresence } from 'framer-motion';
 import {
   Home,
   User,
@@ -11,14 +12,25 @@ import {
   PanelLeft,
   PanelRight,
   PanelTop,
-  PanelBottom
+  PanelBottom,
+  Menu,
+  X
 } from 'lucide-react';
-import { NavLink, useLocation } from 'react-router-dom';
+import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { useTheme } from '../../context/ThemeContext';
 import { useSidebar, type SidebarPosition } from '../../context/SidebarContext';
 import { Magnetic } from '../ui/Magnetic';
 import { HERO_DATA } from '../../data/portfolio';
 import clsx from 'clsx';
+
+const NAV_COLORS: Record<string, { text: string; bg: string; shadow: string; hoverText: string }> = {
+  'dev-red': { text: 'text-dev-red', bg: 'bg-dev-red', shadow: 'shadow-dev-red/20', hoverText: 'group-hover:text-dev-red' },
+  'dev-blue': { text: 'text-dev-blue', bg: 'bg-dev-blue', shadow: 'shadow-dev-blue/20', hoverText: 'group-hover:text-dev-blue' },
+  'dev-orange': { text: 'text-dev-orange', bg: 'bg-dev-orange', shadow: 'shadow-dev-orange/20', hoverText: 'group-hover:text-dev-orange' },
+  'dev-yellow': { text: 'text-dev-yellow', bg: 'bg-dev-yellow', shadow: 'shadow-dev-yellow/20', hoverText: 'group-hover:text-dev-yellow' },
+  'dev-pink': { text: 'text-dev-pink', bg: 'bg-dev-pink', shadow: 'shadow-dev-pink/20', hoverText: 'group-hover:text-dev-pink' },
+  'dev-green': { text: 'text-dev-green', bg: 'bg-dev-green', shadow: 'shadow-dev-green/20', hoverText: 'group-hover:text-dev-green' },
+};
 
 const NAV_ITEMS = [
   { name: 'Home', path: '/', icon: Home, color: 'dev-red' },
@@ -70,7 +82,7 @@ export const Sidebar = () => {
           </motion.div>
           
           <div className={clsx("text-center", !isVertical && "text-left")}>
-            <h2 className={clsx("font-bold text-fg transition-all", isVertical ? "text-xl" : "text-lg leading-none")}>
+            <h2 className={clsx("font-bold text-primary transition-all", isVertical ? "text-xl" : "text-lg leading-none")}>
               {isVertical ? "Phat Nguyen" : "PhatNT"}
             </h2>
             {isVertical && (
@@ -84,7 +96,8 @@ export const Sidebar = () => {
           <LayoutGroup>
             {NAV_ITEMS.map((item) => {
               const isActive = location.pathname === item.path;
-              
+              const colors = NAV_COLORS[item.color];
+
               return (
                 <NavLink
                   key={item.name}
@@ -98,14 +111,14 @@ export const Sidebar = () => {
                   {isActive && (
                     <motion.div
                       layoutId="activeTab"
-                      className={clsx("absolute inset-0 -z-10 shadow-lg", `bg-${item.color} shadow-${item.color}/20`, isVertical ? "rounded-2xl" : "rounded-xl")}
+                      className={clsx("absolute inset-0 -z-10 shadow-lg", colors.bg, colors.shadow, isVertical ? "rounded-2xl" : "rounded-xl")}
                       initial={false}
                       transition={{ type: "spring", stiffness: 300, damping: 30 }}
                     />
                   )}
-                  
+
                   <motion.div whileHover={isVertical ? { x: 3 } : { y: -2 }}>
-                    <item.icon size={isVertical ? 20 : 18} className={clsx(isActive ? "text-white" : `group-hover:text-${item.color} transition-colors`)} />
+                    <item.icon size={isVertical ? 20 : 18} className={clsx(isActive ? "text-white" : [colors.hoverText, "transition-colors"])} />
                   </motion.div>
                   {isVertical && (
                     <span className="font-medium w-24 text-left font-mono relative">
@@ -166,40 +179,115 @@ export const Sidebar = () => {
 };
 
 export const MobileNav = () => {
+  const [isOpen, setIsOpen] = useState(false);
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { theme, toggleTheme } = useTheme();
+
+  const handleNavClick = (path: string) => {
+    navigate(path);
+    setIsOpen(false);
+  };
+
+  // Find current active item for FAB color
+  const activeItem = NAV_ITEMS.find(item => item.path === location.pathname);
+  const activeColors = activeItem ? NAV_COLORS[activeItem.color] : NAV_COLORS['dev-red'];
+
   return (
-    <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-bg-secondary/95 backdrop-blur-xl border-t border-bg-tertiary z-50 pb-[env(safe-area-inset-bottom)]">
-      <div className="flex justify-between items-center px-4 py-3">
-        {NAV_ITEMS.map((item) => (
-          <NavLink
-            key={item.name}
-            to={item.path}
-            className={({ isActive }) =>
-              clsx(
-                "flex flex-col items-center justify-center p-1 min-w-[3.5rem] transition-all duration-300",
-                isActive ? `text-${item.color}` : "text-fg-muted hover:text-fg"
-              )
-            }
+    <div className="md:hidden fixed bottom-6 right-6 z-50">
+      {/* Backdrop */}
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-bg/80 backdrop-blur-sm -z-10"
+            onClick={() => setIsOpen(false)}
+          />
+        )}
+      </AnimatePresence>
+
+      {/* Menu Items */}
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.9 }}
+            transition={{ duration: 0.15 }}
+            className="absolute bottom-14 right-0 bg-bg-secondary/95 backdrop-blur-xl border border-bg-tertiary rounded-2xl p-3 shadow-2xl min-w-[200px]"
           >
-            {({ isActive }) => (
-              <>
-                <motion.div 
-                  whileTap={{ scale: 0.8 }}
-                  animate={isActive ? { y: -2 } : { y: 0 }}
-                >
-                  <item.icon size={22} strokeWidth={isActive ? 2.5 : 2} />
-                </motion.div>
-                <span className={clsx(
-                  "text-[10px] mt-1 font-medium transition-opacity",
-                  isActive ? "opacity-100 font-bold" : "opacity-70"
-                )}>
-                  {item.name}
+            {/* Avatar & Name */}
+            <div className="flex items-center gap-3 px-3 py-3 border-b border-bg-tertiary mb-2">
+              <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-primary">
+                <img src={HERO_DATA.avatar} alt="Phat Nguyen" className="w-full h-full object-cover" />
+              </div>
+              <div>
+                <div className="font-bold text-primary text-sm">Phat Nguyen</div>
+                <div className="text-[10px] text-fg-muted font-mono">Solution Architect</div>
+              </div>
+            </div>
+
+            {/* Nav Items */}
+            <div className="space-y-1">
+              {NAV_ITEMS.map((item) => {
+                const isActive = location.pathname === item.path;
+                const colors = NAV_COLORS[item.color];
+
+                return (
+                  <button
+                    key={item.name}
+                    onClick={() => handleNavClick(item.path)}
+                    className={clsx(
+                      "w-full flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200",
+                      isActive
+                        ? [colors.bg, "text-white shadow-lg", colors.shadow]
+                        : "text-fg-muted hover:bg-bg-tertiary hover:text-fg"
+                    )}
+                  >
+                    <item.icon size={18} />
+                    <span className="font-mono text-sm font-medium">{item.name}</span>
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Theme Toggle */}
+            <div className="mt-2 pt-2 border-t border-bg-tertiary">
+              <button
+                onClick={toggleTheme}
+                className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-fg-muted hover:bg-bg-tertiary hover:text-fg transition-all"
+              >
+                {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
+                <span className="font-mono text-sm font-medium">
+                  {theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
                 </span>
-              </>
-            )}
-          </NavLink>
-        ))}
-      </div>
-    </nav>
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* FAB Button */}
+      <motion.button
+        whileTap={{ scale: 0.9 }}
+        onClick={() => setIsOpen(!isOpen)}
+        className={clsx(
+          "w-11 h-11 rounded-xl flex items-center justify-center shadow-lg transition-all duration-300",
+          isOpen
+            ? "bg-bg-secondary border border-bg-tertiary text-fg rotate-0"
+            : [activeColors.bg, "text-white", activeColors.shadow]
+        )}
+      >
+        <motion.div
+          animate={{ rotate: isOpen ? 180 : 0 }}
+          transition={{ type: "spring", stiffness: 300, damping: 20 }}
+        >
+          {isOpen ? <X size={20} /> : <Menu size={20} />}
+        </motion.div>
+      </motion.button>
+    </div>
   );
 };
 
@@ -211,10 +299,10 @@ export const Layout = ({ children }: { children: React.ReactNode }) => {
   const { position } = useSidebar();
 
   const mainStyles = {
-    left: 'md:ml-80 pb-24 md:pb-0 pt-16 md:pt-0',
-    right: 'md:mr-80 pb-24 md:pb-0 pt-16 md:pt-0',
-    top: 'md:mt-32 pb-24 md:pb-0 pt-16 md:pt-0', // Top bar height approx
-    bottom: 'md:mb-32 pb-24 md:pb-0 pt-16 md:pt-0', // Bottom bar height
+    left: 'md:ml-80 pb-0 md:pb-0 pt-0 md:pt-0',
+    right: 'md:mr-80 pb-0 md:pb-0 pt-0 md:pt-0',
+    top: 'md:mt-32 pb-0 md:pb-0 pt-0 md:pt-0',
+    bottom: 'md:mb-32 pb-0 md:pb-0 pt-0 md:pt-0',
   };
 
   return (
@@ -223,30 +311,12 @@ export const Layout = ({ children }: { children: React.ReactNode }) => {
       <Particles />
       <Spotlight />
       <Sidebar />
-      
-      {/* Mobile Top Bar for Theme Toggle */}
-      <div className="md:hidden fixed top-0 left-0 right-0 h-16 bg-bg/80 backdrop-blur-md z-40 flex items-center justify-between px-6 border-b border-bg-tertiary">
-        <span className="font-bold text-lg text-primary">PhatNT</span>
-        <ThemeToggleMobile />
-      </div>
 
       <main className={clsx("min-h-screen transition-all duration-500 ease-in-out", mainStyles[position])}>
         {children}
       </main>
-      
+
       <MobileNav />
     </div>
-  );
-};
-
-const ThemeToggleMobile = () => {
-  const { theme, toggleTheme } = useTheme();
-  return (
-    <button
-      onClick={toggleTheme}
-      className="p-2 rounded-full bg-bg-tertiary text-fg hover:text-primary transition-colors"
-    >
-      {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
-    </button>
   );
 };
