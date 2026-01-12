@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState } from 'react';
 import { motion, LayoutGroup, AnimatePresence, useMotionValue, animate } from 'framer-motion';
 import {
   Home,
@@ -306,7 +306,7 @@ export const MobileNav = () => {
             top: -(height - EDGE_MARGIN * 2 - BUTTON_SIZE), 
             bottom: 0 
           }}
-        onDragEnd={(event, info) => {
+        onDragEnd={() => {
           // Snap X to nearest edge, leave Y free (momentum)
           const currentX = x.get();
           // Midpoint between leftSnap (negative) and rightSnap (0)

@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { PROJECTS_DATA, type ProjectCategory, type Project } from '../../data/portfolio';
-import { Calendar, Sparkles, Github, ExternalLink, Search, ArrowUpDown, Filter } from 'lucide-react';
+import { Calendar, Github, Search, ArrowUpDown, Filter } from 'lucide-react';
 import { TiltCard } from '../ui/TiltCard';
 import { ProjectDetailsModal } from './ProjectDetailsModal';
 import clsx from 'clsx';

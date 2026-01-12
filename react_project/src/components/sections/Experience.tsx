@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react';
 import { motion, useScroll, useTransform, useMotionTemplate, useMotionValue, AnimatePresence } from 'framer-motion';
 import { EXPERIENCE_DATA, EDUCATION_DATA } from '../../data/portfolio';
-import { Briefcase, GraduationCap, MapPin, Calendar, ArrowRight } from 'lucide-react';
+import { Briefcase, GraduationCap, MapPin } from 'lucide-react';
 import clsx from 'clsx';
 
 type Tab = 'professional' | 'academic';
@@ -135,7 +135,7 @@ export const Experience = () => {
   );
 };
 
-const SpotlightCard = ({ item, index, type }: { item: any, index: number, type: 'job' | 'edu' }) => {
+const SpotlightCard = ({ item, type }: { item: any, index: number, type: 'job' | 'edu' }) => {
   const ref = useRef<HTMLDivElement>(null);
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);

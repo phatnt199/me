@@ -1,7 +1,6 @@
 import { motion } from 'framer-motion';
 import type { Project } from '../../data/portfolio';
 import { X, Github, ExternalLink, Calendar, Layers, Code, Sparkles } from 'lucide-react';
-import clsx from 'clsx';
 import { useEffect } from 'react';
 
 interface ProjectDetailsModalProps {
