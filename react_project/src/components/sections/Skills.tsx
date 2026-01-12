@@ -1,138 +1,208 @@
 import { motion } from 'framer-motion';
 import { SKILLS_DATA } from '../../data/portfolio';
 import clsx from 'clsx';
+import { TiltCard } from '../ui/TiltCard';
+import { Cpu, Globe, Database, Terminal, Code2, Coffee, Zap } from 'lucide-react';
+
+// Map icons for categories
+const CATEGORY_ICONS: Record<string, any> = {
+  Languages: Code2,
+  Frameworks: Globe,
+  Persistence: Database,
+  Infrastructure: Terminal,
+};
+
+const CATEGORY_COLORS: Record<string, string> = {
+  Languages: 'text-dev-blue',
+  Frameworks: 'text-dev-pink',
+  Persistence: 'text-dev-green',
+  Infrastructure: 'text-dev-orange',
+};
 
 export const Skills = () => {
   return (
-    <section className="min-h-screen px-6 py-20 max-w-7xl mx-auto">
-      <div className="mb-12">
-        <h2 className="text-3xl font-bold mb-2">What Can I Do?</h2>
-        <div className="w-20 h-1 bg-primary rounded-full" />
+    <section className="min-h-screen px-6 py-20 max-w-[1600px] mx-auto relative overflow-hidden">
+      {/* Background Decor */}
+      <div className="absolute top-40 right-0 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[100px] pointer-events-none" />
+      <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-dev-blue/5 rounded-full blur-[100px] pointer-events-none" />
+
+      {/* Header */}
+      <div className="mb-16 md:mb-24">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+        >
+          <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-primary via-purple-400 to-dev-blue">
+            Technical Arsenal
+          </h2>
+          <p className="text-fg-muted max-w-2xl text-lg sm:text-xl leading-relaxed">
+            I don't just write code; I architect ecosystems. From bare-metal performance optimization to distributed cloud-native systems.
+          </p>
+        </motion.div>
       </div>
 
-      <div className="grid lg:grid-cols-2 gap-16">
-        {/* Left Column: Technical Skills */}
-        <motion.div
-          initial="hidden"
-          whileInView="show"
-          viewport={{ once: true }}
-          variants={{
-            hidden: { opacity: 0 },
-            show: { opacity: 1, transition: { staggerChildren: 0.1 } }
-          }}
-        >
-          <h3 className="text-xl font-bold mb-6 flex items-center gap-2">
-            <span className="text-dev-orange">#</span> Core Architecture Stack
-          </h3>
-          <div className="space-y-6">
+      <div className="space-y-24 md:space-y-32">
+        
+        {/* Section 1: Core Architecture (Progress Cards) */}
+        <div>
+          <motion.h3 
+            initial={{ opacity: 0, x: -20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            className="text-2xl font-bold mb-10 flex items-center gap-3 text-fg"
+          >
+            <Cpu className="text-primary" />
+            <span className="bg-clip-text text-transparent bg-gradient-to-r from-fg to-fg-muted">
+              Core Competencies
+            </span>
+          </motion.h3>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {SKILLS_DATA.technical.map((skill, idx) => {
-              // Cycle through colors for bars
-              const colors = ["bg-dev-red", "bg-dev-orange", "bg-dev-yellow", "bg-dev-green", "bg-dev-blue", "bg-dev-pink"];
-              const barColor = colors[idx % colors.length];
-              
+              const colors = ["text-dev-red", "text-dev-orange", "text-dev-yellow", "text-dev-green", "text-dev-blue", "text-dev-pink"];
+              const colorClass = colors[idx % colors.length];
+              const bgClass = colorClass.replace('text-', 'bg-');
+
               return (
-                <motion.div 
+                <motion.div
                   key={skill.name}
-                  variants={{
-                    hidden: { opacity: 0, x: -20 },
-                    show: { opacity: 1, x: 0 }
-                  }}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: idx * 0.1 }}
                 >
-                  <div className="flex justify-between mb-2 text-sm font-medium">
-                    <span className="flex items-center gap-2">
-                      <skill.icon size={16} className={clsx(barColor.replace('bg-', 'text-'))} />
+                  <TiltCard className="p-6 h-full bg-bg-secondary/50 border border-bg-tertiary rounded-2xl hover:border-primary/30 transition-all duration-300 group">
+                    <div className="flex items-start justify-between mb-6">
+                      <div className={clsx("p-3 rounded-xl bg-bg-tertiary/50 group-hover:scale-110 transition-transform duration-300", colorClass)}>
+                        <skill.icon size={24} />
+                      </div>
+                      <span className={clsx("text-2xl font-bold font-mono opacity-50 group-hover:opacity-100 transition-opacity", colorClass)}>
+                        {Math.round(skill.level * 100)}%
+                      </span>
+                    </div>
+                    
+                    <h4 className="text-lg font-bold mb-4 text-fg group-hover:text-primary transition-colors">
                       {skill.name}
-                    </span>
-                    <span className="text-fg-muted">{skill.level * 100}%</span>
-                  </div>
-                  <div className="h-2 w-full bg-bg-tertiary rounded-full overflow-hidden">
-                    <motion.div
-                      initial={{ width: 0 }}
-                      whileInView={{ width: `${skill.level * 100}%` }}
-                      transition={{ duration: 1.5, ease: "easeOut", delay: 0.2 }}
-                      className={clsx("h-full rounded-full", barColor)}
-                    />
-                  </div>
+                    </h4>
+
+                    {/* Custom Progress Bar */}
+                    <div className="relative h-2 w-full bg-bg-tertiary rounded-full overflow-hidden">
+                      <motion.div
+                        initial={{ width: 0 }}
+                        whileInView={{ width: `${skill.level * 100}%` }}
+                        transition={{ duration: 1.5, ease: "easeOut", delay: 0.2 + (idx * 0.1) }}
+                        className={clsx("absolute top-0 left-0 h-full rounded-full", bgClass)}
+                      />
+                    </div>
+                  </TiltCard>
                 </motion.div>
               );
             })}
           </div>
-        </motion.div>
+        </div>
 
-        {/* Right Column: Soft Skills & Languages */}
-        <div className="space-y-12">
-           {/* Languages Chips */}
-           <motion.div
-             initial="hidden"
-             whileInView="show"
-             viewport={{ once: true }}
-             variants={{
-               hidden: { opacity: 0 },
-               show: { opacity: 1, transition: { staggerChildren: 0.05 } }
-             }}
-           >
-            <h3 className="text-xl font-bold mb-6 flex items-center gap-2">
-              <span className="text-dev-yellow">#</span> Toolchain & Mastery
-            </h3>
-            <div className="space-y-6">
-              {SKILLS_DATA.languages.map((group) => (
-                <div key={group.category}>
-                  <h4 className="text-xs font-mono font-bold text-fg-muted uppercase tracking-widest mb-3">
-                    {group.category}
-                  </h4>
+        {/* Section 2: Toolchain Clusters */}
+        <div>
+          <motion.h3 
+            initial={{ opacity: 0, x: -20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            className="text-2xl font-bold mb-10 flex items-center gap-3 text-fg"
+          >
+            <Terminal className="text-dev-blue" />
+            <span className="bg-clip-text text-transparent bg-gradient-to-r from-fg to-fg-muted">
+              Tech Stack & Tools
+            </span>
+          </motion.h3>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+            {SKILLS_DATA.languages.map((group, groupIdx) => {
+              const Icon = CATEGORY_ICONS[group.category] || Terminal;
+              const colorClass = CATEGORY_COLORS[group.category] || 'text-fg';
+
+              return (
+                <motion.div
+                  key={group.category}
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: groupIdx * 0.1 }}
+                  className="bg-bg-secondary/30 border border-bg-tertiary rounded-3xl p-6 hover:bg-bg-secondary/50 transition-colors backdrop-blur-sm"
+                >
+                  <div className="flex items-center gap-3 mb-6">
+                    <Icon className={clsx("w-5 h-5", colorClass)} />
+                    <h4 className="font-bold text-fg tracking-wide uppercase text-sm">
+                      {group.category}
+                    </h4>
+                  </div>
+                  
                   <div className="flex flex-wrap gap-2">
-                    {group.items.map((item) => (
+                    {group.items.map((item, itemIdx) => (
                       <motion.span
                         key={item}
-                        variants={{
-                          hidden: { opacity: 0, scale: 0.8 },
-                          show: { opacity: 1, scale: 1 }
-                        }}
-                        whileHover={{ y: -3, backgroundColor: "var(--color-bg-tertiary)" }}
-                        className="px-3 py-1.5 bg-bg-secondary border border-bg-tertiary rounded-xl text-xs font-medium cursor-default transition-colors text-dev-blue hover:text-dev-pink"
+                        initial={{ opacity: 0, scale: 0.5 }}
+                        whileInView={{ opacity: 1, scale: 1 }}
+                        viewport={{ once: true }}
+                        transition={{ delay: (groupIdx * 0.1) + (itemIdx * 0.05) }}
+                        whileHover={{ scale: 1.05, y: -2 }}
+                        className={clsx(
+                          "px-3 py-1.5 rounded-lg text-xs font-medium border border-bg-tertiary bg-bg/50 text-fg-muted cursor-default transition-all hover:border-primary/30 hover:text-fg hover:shadow-lg hover:shadow-primary/5",
+                        )}
                       >
                         {item}
                       </motion.span>
                     ))}
                   </div>
-                </div>
-              ))}
-            </div>
-          </motion.div>
+                </motion.div>
+              );
+            })}
+          </div>
+        </div>
 
-          {/* Soft Skills Grid */}
-          <motion.div
-            initial="hidden"
-            whileInView="show"
-            viewport={{ once: true }}
-            variants={{
-              hidden: { opacity: 0 },
-              show: { opacity: 1, transition: { staggerChildren: 0.1 } }
-            }}
-          >
-            <h3 className="text-xl font-bold mb-6 flex items-center gap-2">
-              <span className="text-dev-green">#</span> Leadership & Strategy
-            </h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-              {SKILLS_DATA.soft.map((skill) => (
+        {/* Section 3: Leadership & Soft Skills */}
+        <div className="grid lg:grid-cols-12 gap-10">
+          {/* Left: Soft Skills Grid */}
+          <div className="lg:col-span-7">
+            <motion.h3 
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              className="text-2xl font-bold mb-10 flex items-center gap-3 text-fg"
+            >
+              <Coffee className="text-dev-green" />
+              <span className="bg-clip-text text-transparent bg-gradient-to-r from-fg to-fg-muted">
+                Leadership & Strategy
+              </span>
+            </motion.h3>
+            
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {SKILLS_DATA.soft.map((skill, idx) => (
                 <motion.div
                   key={skill.name}
-                  variants={{
-                    hidden: { opacity: 0, y: 20 },
-                    show: { opacity: 1, y: 0 }
-                  }}
-                  className="p-3 sm:p-4 bg-bg-secondary rounded-xl sm:rounded-2xl border border-bg-tertiary flex items-center gap-3"
+                  initial={{ opacity: 0, x: -10 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: idx * 0.1 }}
+                  className="group flex items-center gap-4 p-4 rounded-xl bg-bg-secondary border border-bg-tertiary hover:border-dev-green/50 transition-all duration-300"
                 >
-                  <div className="p-2 bg-bg text-dev-green rounded-lg sm:rounded-xl shrink-0">
-                    <skill.icon size={16} className="sm:w-[18px] sm:h-[18px]" />
+                  <div className="p-3 rounded-lg bg-dev-green/10 text-dev-green group-hover:scale-110 transition-transform">
+                    <skill.icon size={20} />
                   </div>
-                  <div className="min-w-0 flex-1">
-                    <div className="font-bold text-xs sm:text-sm truncate">{skill.name}</div>
-                    <div className="mt-1 w-full bg-bg-tertiary h-1.5 rounded-full overflow-hidden">
+                  <div className="flex-1">
+                    <div className="flex justify-between items-center mb-1">
+                      <span className="font-bold text-sm text-fg">{skill.name}</span>
+                      <span className="text-xs font-mono text-dev-green opacity-0 group-hover:opacity-100 transition-opacity">
+                        {Math.round(skill.level * 100)}%
+                      </span>
+                    </div>
+                    <div className="h-1.5 w-full bg-bg-tertiary rounded-full overflow-hidden">
                       <motion.div
                         initial={{ width: 0 }}
                         whileInView={{ width: `${skill.level * 100}%` }}
-                        transition={{ duration: 1, delay: 0.5 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 1, delay: 0.2 }}
                         className="h-full bg-dev-green"
                       />
                     </div>
@@ -140,19 +210,41 @@ export const Skills = () => {
                 </motion.div>
               ))}
             </div>
-          </motion.div>
+          </div>
+
+          {/* Right: Summary Box */}
+          <div className="lg:col-span-5 flex items-end">
+            <TiltCard className="w-full p-8 rounded-3xl bg-gradient-to-br from-bg-secondary to-bg border border-bg-tertiary relative overflow-hidden">
+              <div className="absolute top-0 right-0 p-3 opacity-10">
+                <Zap size={120} />
+              </div>
+              
+              <h4 className="text-xl font-bold mb-6 text-dev-blue flex items-center gap-2">
+                <Terminal size={20} />
+                Philosophy
+              </h4>
+              
+              <div className="space-y-4">
+                {SKILLS_DATA.descriptions.map((desc, i) => (
+                  <motion.div
+                    key={i}
+                    initial={{ opacity: 0, y: 10 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: 0.5 + (i * 0.1) }}
+                    className="flex gap-3 text-sm leading-relaxed text-fg-muted"
+                  >
+                    <span className="text-dev-blue mt-1">▹</span>
+                    <p>{desc}</p>
+                  </motion.div>
+                ))}
+              </div>
+            </TiltCard>
+          </div>
         </div>
-      </div>
-      
-      {/* Skill Context Text */}
-      <div className="mt-16 p-6 bg-bg-secondary/50 border border-bg-tertiary rounded-[2rem]">
-        <h4 className="font-bold mb-4 text-dev-blue">In Summary</h4>
-        <div className="space-y-2 text-fg-muted text-sm">
-          {SKILLS_DATA.descriptions.map((desc, i) => (
-            <p key={i}>• {desc}</p>
-          ))}
-        </div>
+
       </div>
     </section>
   );
 };
+
