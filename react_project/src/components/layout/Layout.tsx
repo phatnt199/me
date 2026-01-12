@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { motion, LayoutGroup, AnimatePresence } from 'framer-motion';
+import { useState, useRef } from 'react';
+import { motion, LayoutGroup, AnimatePresence, useMotionValue, animate } from 'framer-motion';
 import {
   Home,
   User,
@@ -183,111 +183,164 @@ export const MobileNav = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { theme, toggleTheme } = useTheme();
+  
+  const width = typeof window !== 'undefined' ? window.innerWidth : 375;
+  const height = typeof window !== 'undefined' ? window.innerHeight : 800;
 
+  const x = useMotionValue(0); 
+  const y = useMotionValue(0);
+  
   const handleNavClick = (path: string) => {
     navigate(path);
     setIsOpen(false);
   };
 
-  // Find current active item for FAB color
   const activeItem = NAV_ITEMS.find(item => item.path === location.pathname);
   const activeColors = activeItem ? NAV_COLORS[activeItem.color] : NAV_COLORS['dev-red'];
 
+  const EDGE_MARGIN = 4;
+  const BUTTON_SIZE = 56;
+  const leftSnap = -(width - (EDGE_MARGIN * 2) - BUTTON_SIZE);
+  const rightSnap = 0;
+
   return (
-    <div className="md:hidden fixed bottom-6 right-6 z-50">
-      {/* Backdrop */}
+    <>
       <AnimatePresence>
         {isOpen && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-bg/80 backdrop-blur-sm -z-10"
+            className="md:hidden fixed inset-0 bg-bg/60 backdrop-blur-md z-50 flex items-center justify-center"
             onClick={() => setIsOpen(false)}
-          />
-        )}
-      </AnimatePresence>
-
-      {/* Menu Items */}
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.9 }}
-            transition={{ duration: 0.15 }}
-            className="absolute bottom-14 right-0 bg-bg-secondary/95 backdrop-blur-xl border border-bg-tertiary rounded-2xl p-3 shadow-2xl min-w-[200px]"
           >
-            {/* Avatar & Name */}
-            <div className="flex items-center gap-3 px-3 py-3 border-b border-bg-tertiary mb-2">
-              <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-primary">
-                <img src={HERO_DATA.avatar} alt="Phat Nguyen" className="w-full h-full object-cover" />
-              </div>
-              <div>
-                <div className="font-bold text-primary text-sm">Phat Nguyen</div>
-                <div className="text-[10px] text-fg-muted font-mono">Solution Architect</div>
-              </div>
-            </div>
-
-            {/* Nav Items */}
-            <div className="space-y-1">
-              {NAV_ITEMS.map((item) => {
-                const isActive = location.pathname === item.path;
-                const colors = NAV_COLORS[item.color];
-
-                return (
-                  <button
-                    key={item.name}
-                    onClick={() => handleNavClick(item.path)}
-                    className={clsx(
-                      "w-full flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200",
-                      isActive
-                        ? [colors.bg, "text-white shadow-lg", colors.shadow]
-                        : "text-fg-muted hover:bg-bg-tertiary hover:text-fg"
-                    )}
-                  >
-                    <item.icon size={18} />
-                    <span className="font-mono text-sm font-medium">{item.name}</span>
-                  </button>
-                );
-              })}
-            </div>
-
-            {/* Theme Toggle */}
-            <div className="mt-2 pt-2 border-t border-bg-tertiary">
-              <button
-                onClick={toggleTheme}
-                className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-fg-muted hover:bg-bg-tertiary hover:text-fg transition-all"
+            {/* Expanded Menu (Hero Animation Target) */}
+            <motion.div
+              layoutId="menu-container"
+              className="bg-bg-secondary/90 backdrop-blur-xl border border-bg-tertiary shadow-2xl w-[280px] overflow-hidden"
+              style={{ borderRadius: 24 }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <motion.div 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ delay: 0.1 }}
+                className="p-6"
               >
-                {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
-                <span className="font-mono text-sm font-medium">
-                  {theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
-                </span>
-              </button>
-            </div>
+                {/* Header */}
+                <div className="flex flex-col items-center justify-center mb-6">
+                  <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-primary mb-3 shadow-lg">
+                    <img src={HERO_DATA.avatar} alt="Phat Nguyen" className="w-full h-full object-cover" />
+                  </div>
+                  <div className="text-center">
+                    <h3 className="font-bold text-lg text-primary">Phat Nguyen</h3>
+                    <p className="text-xs text-fg-muted font-mono tracking-wider uppercase">Solution Architect</p>
+                  </div>
+                </div>
+
+                {/* Grid Menu */}
+                <div className="grid grid-cols-3 gap-3 mb-6">
+                  {NAV_ITEMS.map((item) => {
+                    const isActive = location.pathname === item.path;
+                    const colors = NAV_COLORS[item.color];
+                    return (
+                      <button
+                        key={item.name}
+                        onClick={() => handleNavClick(item.path)}
+                        className="flex flex-col items-center gap-2 group"
+                      >
+                        <div className={clsx(
+                          "w-12 h-12 rounded-2xl flex items-center justify-center transition-all duration-300 shadow-sm",
+                          isActive 
+                            ? [colors.bg, "text-white shadow-md scale-110"] 
+                            : "bg-bg-tertiary text-fg-muted group-hover:bg-bg group-hover:text-fg"
+                        )}>
+                          <item.icon size={20} />
+                        </div>
+                        <span className={clsx(
+                          "text-[10px] font-medium transition-colors",
+                          isActive ? "text-fg" : "text-fg-muted"
+                        )}>
+                          {item.name}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {/* Footer Actions */}
+                <div className="flex items-center justify-center gap-4 pt-4 border-t border-bg-tertiary/50">
+                  <button 
+                    onClick={toggleTheme}
+                    className="flex items-center gap-2 px-4 py-2 rounded-xl bg-bg-tertiary/50 text-fg-muted hover:bg-bg-tertiary hover:text-fg transition-all text-xs font-medium"
+                  >
+                    {theme === 'dark' ? <Sun size={16} /> : <Moon size={16} />}
+                    {theme === 'dark' ? 'Light' : 'Dark'}
+                  </button>
+                  <button 
+                    onClick={() => setIsOpen(false)}
+                    className="flex items-center gap-2 px-4 py-2 rounded-xl bg-bg-tertiary/50 text-fg-muted hover:bg-dev-red/10 hover:text-dev-red transition-all text-xs font-medium"
+                  >
+                    <X size={16} />
+                    Close
+                  </button>
+                </div>
+              </motion.div>
+            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* FAB Button */}
-      <motion.button
-        whileTap={{ scale: 0.9 }}
-        onClick={() => setIsOpen(!isOpen)}
-        className={clsx(
-          "w-11 h-11 rounded-xl flex items-center justify-center shadow-lg transition-all duration-300",
-          isOpen
-            ? "bg-bg-secondary border border-bg-tertiary text-fg rotate-0"
-            : [activeColors.bg, "text-white", activeColors.shadow]
-        )}
+      {/* Floating Button (Draggable Source) */}
+      {!isOpen && (
+        <motion.div 
+          className="md:hidden fixed z-50"
+          style={{ bottom: EDGE_MARGIN, right: EDGE_MARGIN, x, y }}
+          drag
+          dragMomentum={false}
+          dragElastic={0.1}
+          dragConstraints={{ 
+            left: leftSnap, 
+            right: rightSnap, 
+            top: -(height - EDGE_MARGIN * 2 - BUTTON_SIZE), 
+            bottom: 0 
+          }}
+        onDragEnd={(event, info) => {
+          // Snap X to nearest edge, leave Y free (momentum)
+          const currentX = x.get();
+          // Midpoint between leftSnap (negative) and rightSnap (0)
+          const midPoint = leftSnap / 2;
+          
+          const targetX = currentX < midPoint ? leftSnap : rightSnap;
+          
+          animate(x, targetX, { type: "spring", stiffness: 300, damping: 30 });
+        }}
+        dragTransition={{
+          power: 0.2,
+          timeConstant: 200
+        }}
       >
-        <motion.div
-          animate={{ rotate: isOpen ? 180 : 0 }}
-          transition={{ type: "spring", stiffness: 300, damping: 20 }}
-        >
-          {isOpen ? <X size={20} /> : <Menu size={20} />}
+          <motion.button
+            layoutId="menu-container"
+            whileTap={{ scale: 0.9 }}
+            onClick={() => setIsOpen(true)}
+            className={clsx(
+              "w-14 h-14 flex items-center justify-center shadow-2xl relative",
+              [activeColors.bg, "text-white", activeColors.shadow]
+            )}
+            style={{ borderRadius: 16 }}
+          >
+            <motion.div 
+              initial={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+            >
+              <Menu size={26} />
+            </motion.div>
+          </motion.button>
         </motion.div>
-      </motion.button>
-    </div>
+      )}
+    </>
   );
 };
 
